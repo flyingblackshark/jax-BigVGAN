@@ -1,0 +1,6 @@
+bigvgan_generator.pt
+.conda
+__pycache__
+bigvgan_generator_3msteps.pt
+output.wav
+test.wav
