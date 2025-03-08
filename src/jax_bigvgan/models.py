@@ -352,6 +352,7 @@ class AMPBlock1(nn.Module):
     channels:int
     kernel_size:int=3
     dilation:tuple=(1, 3, 5)
+    snake_logscale:bool = False
     def setup(self):
         
         self.convs1 =[
@@ -364,7 +365,7 @@ class AMPBlock1(nn.Module):
             nn.WeightNorm(nn.Conv(self.channels, [self.kernel_size], 1, kernel_dilation=1))
         ]
         self.num_layers = len(self.convs1) + len(self.convs2)
-        self.activations = [Activation1d(activation=SnakeBeta(alpha_logscale=config.snake_logscale)) for _ in range(self.num_layers)]
+        self.activations = [Activation1d(activation=SnakeBeta(alpha_logscale=self.snake_logscale)) for _ in range(self.num_layers)]
         
     def __call__(self, x,train=True):
         acts1, acts2 = self.activations[::2], self.activations[1::2]
@@ -396,14 +397,14 @@ class Generator(nn.Module):
         for i in range(len(ups)):
             ch = self.config.upsample_initial_channel // (2 ** (i + 1))
             for k, d in zip(self.config.resblock_kernel_sizes, self.config.resblock_dilation_sizes):
-                resblocks.append(AMPBlock1(ch, k, d))
+                resblocks.append(AMPBlock1(ch, k, d,self.config.snake_logscale))
 
-        self.conv_post =  nn.WeightNorm(nn.Conv(features=1, kernel_size=[7], strides=1 , use_bias=config.use_bias_at_final))
+        self.conv_post =  nn.WeightNorm(nn.Conv(features=1, kernel_size=[7], strides=1 , use_bias=self.config.use_bias_at_final))
         self.cond = nn.Conv(self.config.upsample_initial_channel, 1)
         self.ups = ups
         self.resblocks = resblocks
         self.upp = int(np.prod(self.config.upsample_rates))
-        self.activation_post = Activation1d(activation=SnakeBeta(alpha_logscale=config.snake_logscale))
+        self.activation_post = Activation1d(activation=SnakeBeta(alpha_logscale=self.config.snake_logscale))
 
     def __call__(self, x, train=False):
 
@@ -421,7 +422,7 @@ class Generator(nn.Module):
 
         x = self.activation_post(x)
         x = self.conv_post(x.transpose(0,2,1)).transpose(0,2,1)
-        if config.use_tanh_at_final:
+        if self.config.use_tanh_at_final:
             x = jnp.tanh(x)
         else:
             x = jnp.clip(x, min=-1.0, max=1.0)  # Bound the output to [-1, 1]
@@ -441,8 +442,8 @@ if __name__ == "__main__":
     import soundfile as sf
     wav,sr = librosa.load("./test.wav",sr=44100)
     wav = wav[np.newaxis,:]
-    mel = get_mel(wav,n_mels=config.num_mels,n_fft=config.n_fft,win_size=config.win_size,hop_length=config.hop_size,fmin=config.fmin)
-    mel = np.load("/home/fbs/torch-test/test.np.npy")
+    mel = get_mel(wav,n_mels=config.num_mels,n_fft=config.n_fft,win_size=config.win_size,hop_length=config.hop_size,fmin=config.fmin,fmax=config.fmax)
+    #mel = np.load("/home/fbs/torch-test/test.np.npy")
     #n_frames = int(44100 // 512) + 1
     #params = model.init(jax.random.PRNGKey(0),mel)
     #flatten_param = flax.traverse_util.flatten_dict(params,sep='.')

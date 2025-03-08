@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "jax-bigvgan"
+authors = [
+  { name="flyingblackshark", email="aliu2000@outlook.com" },
+]
+dependencies = [
+    "jax>=0.2.16",
+    "flax",
+    "torch"
+]
+dynamic = ["version"]
+description = "JAX Implementation BigVGAN"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Distributed Computing",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/flyingblackshark/jax-BigVGAN"
+Issues = "https://github.com/flyingblackshark/jax-BigVGAN/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "jax_bigvgan.__version__"}

@@ -4,3 +4,10 @@ __pycache__
 bigvgan_generator_3msteps.pt
 output.wav
 test.wav
+base.yaml
+
+.vscode
+.conda
+dist
+jax_bigvgan.egg-info
+.env
