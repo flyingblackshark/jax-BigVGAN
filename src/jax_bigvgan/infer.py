@@ -1,8 +1,8 @@
 import jax.numpy as jnp
 from omegaconf import OmegaConf
-from util import get_mel
-from models import Generator
-from convert import convert_torch_weights
+from .util import get_mel
+from .models import Generator
+from .convert import convert_torch_weights
 import jax
 from os import environ
 from pathlib import Path
@@ -96,7 +96,7 @@ def load_model(model_type="44khz",load_path = None):
 
     return model,params
 if __name__ == "__main__":
-    load_path = download_model()
+    load_path = download_model("24khz")
     with open(load_path, "rb") as msgpack_file:
         msgpack_content = msgpack_file.read()
     data = flax.serialization.msgpack_restore(msgpack_content)
@@ -108,10 +108,10 @@ if __name__ == "__main__":
     import librosa
     import numpy as np
     import soundfile as sf
-    wav,sr = librosa.load("./test.wav",sr=44100)
+    wav,sr = librosa.load("./test.wav",sr=24000)
     wav = wav[np.newaxis,:]
     mel = get_mel(wav,n_mels=config.num_mels,n_fft=config.n_fft,win_size=config.win_size,hop_length=config.hop_size,fmin=config.fmin,fmax=config.fmax)
     rng = {'params': jax.random.PRNGKey(0), 'dropout': jax.random.PRNGKey(0)}
     res = model.apply({"params":params},mel,rngs=rng)
-    sf.write("output.wav",res[0,0],samplerate=44100)
+    sf.write("output.wav",res[0,0],samplerate=24000)
     print()
