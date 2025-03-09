@@ -83,9 +83,9 @@ def download_model(model_type = "44khz"):
 
     return jax_write_path
 
-def load_model(load_path = None):
+def load_model(model_type="44khz",load_path = None):
     if not load_path:
-        load_path = download_model()
+        load_path = download_model(model_type)
     with open(load_path, "rb") as msgpack_file:
         msgpack_content = msgpack_file.read()
     data = flax.serialization.msgpack_restore(msgpack_content)
