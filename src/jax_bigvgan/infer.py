@@ -33,7 +33,7 @@ def download_model(model_type = "44khz"):
         cache_home = Path.home() / ".cache" / "jax_bigvgan"
 
     # 最终合成后的 msgpack 文件路径
-    jax_write_path = cache_home / "bigvgan_c_v001.msgpack"
+    jax_write_path = cache_home / f"bigvgan_{model_type}.msgpack"
 
     if jax_write_path.exists():
         return jax_write_path
@@ -49,8 +49,8 @@ def download_model(model_type = "44khz"):
         case _:
             raise "Unknown Model"
 
-    torch_model_path = cache_home / "bigvgan_c_v001.pt"
-    config_path = cache_home / "bigvgan_config.json"
+    torch_model_path = cache_home / f"bigvgan_{model_type}.pt"
+    config_path = cache_home / f"bigvgan_{model_type}_config.json"
 
     # 下载 torch 模型权重
     if not torch_model_path.exists():
