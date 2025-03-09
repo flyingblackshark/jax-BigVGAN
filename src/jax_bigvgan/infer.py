@@ -91,8 +91,9 @@ def load_model(model_type="44khz",load_path = None):
     data = flax.serialization.msgpack_restore(msgpack_content)
     params = data["params"]
     config = data["config"]
-    model = Generator(config)
     config = OmegaConf.create(config)
+    model = Generator(config)
+    
 
     return model,params
 if __name__ == "__main__":
