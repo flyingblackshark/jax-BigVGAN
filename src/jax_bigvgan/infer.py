@@ -41,10 +41,10 @@ def download_model(model_type = "44khz"):
     # BigVGan 模型权重和配置文件的下载链接（请替换为实际地址）
     match model_type:
         case "44khz":
-            download_link_model = "https://huggingface.co/nvidia/bigvgan_v2_44khz_128band_256x/resolve/main/bigvgan_generator.pt"
+            download_link_model = "https://huggingface.co/nvidia/bigvgan_v2_44khz_128band_256x/resolve/main/bigvgan_generator_3msteps.pt"
             download_link_config = "https://huggingface.co/nvidia/bigvgan_v2_44khz_128band_256x/raw/main/config.json"
         case "24khz":
-            download_link_model = "https://huggingface.co/nvidia/bigvgan_v2_24khz_100band_256x/resolve/main/bigvgan_generator.pt"
+            download_link_model = "https://huggingface.co/nvidia/bigvgan_v2_24khz_100band_256x/resolve/main/bigvgan_generator_3msteps.pt"
             download_link_config = "https://huggingface.co/nvidia/bigvgan_v2_24khz_100band_256x/raw/main/config.json"
         case _:
             raise "Unknown Model"
